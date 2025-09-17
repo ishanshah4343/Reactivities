@@ -1,20 +1,4 @@
-using Domain;
-using Microsoft.EntityFrameworkCore;
-
-namespace Persistence
-{
-    public class DbInitializer
-    {
-        public static async Task SeedData(AppDbContext context)
-        {
-            if (context.Activities.Any())
-            {
-                return; // DB has been seeded
-            }
-
-            var activities = new List<Activity>
-            {
-               new() {
+new() {
                 Title = "Past Activity 1",
                 Date = DateTime.Now.AddMonths(-2),
                 Description = "Activity 2 months ago",
@@ -120,11 +104,3 @@ namespace Persistence
                 Latitude = 51.5575525,
                 Longitude = -0.781404
             }
-            };
-
-            context.Activities.AddRange(activities);
-
-            await context.SaveChangesAsync();
-        }
-    }
-}
