@@ -1,15 +1,13 @@
 import { Box, Paper, TextField, Typography, Button } from "@mui/material";
 import type { FormEvent } from "react";
 import { useActivities } from "../../../lib/hooks/useActivities";
+import { useNavigate, useParams } from "react-router";
 
-type Props = {
-  activity?: Activity;
-  closeForm: () => void;
-};
+const ActivityForm = () => {
+  const { id } = useParams<{ id: string }>();
 
-const ActivityForm = ({ activity, closeForm }: Props) => {
-  const { updateActivity, createActivity } = useActivities();
-
+  const { updateActivity, createActivity, activity, isLoadingActivity } = useActivities(id);
+  const navigate = useNavigate();
   // Get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
     const today = new Date();
@@ -30,17 +28,20 @@ const ActivityForm = ({ activity, closeForm }: Props) => {
     if (activity) {
       data.id = activity.id;
       await updateActivity.mutateAsync(data as unknown as Activity);
-      closeForm();
+      navigate(`/activities/${activity.id}`);
     } else {
-      await createActivity.mutateAsync(data as unknown as Activity);
-      closeForm();
+      createActivity.mutate(data as unknown as Activity, {
+        onSuccess: (id) => navigate(`/activities/${id}`),
+      });
     }
   };
+
+  if (isLoadingActivity) return <Typography>Loading...</Typography>;
 
   return (
     <Paper sx={{ borderRadius: 3, p: 3 }}>
       <Typography variant="h5" gutterBottom color="primary">
-        Create Activity
+        {activity ? "Edit Activity" : "Create Activity"}
       </Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
         <TextField name="title" label="Title" defaultValue={activity?.title} />
@@ -63,7 +64,7 @@ const ActivityForm = ({ activity, closeForm }: Props) => {
           >
             Submit
           </Button>
-          <Button onClick={closeForm} color="inherit">
+          <Button onClick={() => {}} color="inherit">
             Cancel
           </Button>
         </Box>

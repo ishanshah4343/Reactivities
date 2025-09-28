@@ -1,20 +1,12 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Chip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material";
 import { useActivities } from "../../../lib/hooks/useActivities";
+import { Link } from "react-router";
 
 type Props = {
   activity: Activity;
-  selectActivity: (id: string) => void;
 };
 
-const ActivityCard = ({ activity, selectActivity }: Props) => {
+const ActivityCard = ({ activity }: Props) => {
   const { deleteActivity } = useActivities();
   return (
     <Card sx={{ borderRadius: 3 }}>
@@ -28,16 +20,10 @@ const ActivityCard = ({ activity, selectActivity }: Props) => {
           {activity.city}/{activity.venue}
         </Typography>
       </CardContent>
-      <CardActions
-        sx={{ display: "flex", justifyContent: "space-between", px: 2, pb: 2 }}
-      >
+      <CardActions sx={{ display: "flex", justifyContent: "space-between", px: 2, pb: 2 }}>
         <Chip label={activity.category} variant="outlined"></Chip>
-        <Box sx ={{ display: "flex", gap: 2 }}>
-          <Button
-            onClick={() => selectActivity(activity.id)}
-            size="medium"
-            variant="contained"
-          >
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button component={Link} to={`/activities/${activity.id}`} size="medium" variant="contained">
             View
           </Button>
           <Button
